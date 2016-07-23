@@ -31,12 +31,16 @@ def update_userinfo(request):
 	put = QueryDict(request.body)
 	user = Login.objects.get(user_id=put.get('user_id'))
 	if not user is None:
-		if put.get('type') == 'update_user_score':
-			user.user_score = put.get('user_score')
-		elif put.get('type') == 'update_connect_time':
+		if put.get('update_type') == '1':
+			if int(user.user_score) < int(put.get('user_score')):
+				user.user_score = put.get('user_score')
+		elif put.get('update_type') == '2':
 			user.connect_time = timezone.now()
-		elif put.get('type') == 'update_shutgame_time':
+		elif put.get('update_type') == '3':
 			user.shutgame_time = timezone.now()
+		else:
+			return JsonResponse({"result_msg":put.get('update_type')})
+
 		user.save()
 
 		return JsonResponse({"result_msg":"ok"})
