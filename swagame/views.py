@@ -27,22 +27,34 @@ def user_insert(request):
                 return JsonResponse({"result_msg":"already_exist"})
 
 @csrf_exempt
-def update_userscore(request):	
+def update_userinfo(request):	
 	put = QueryDict(request.body)
 	user = Login.objects.get(user_id=put.get('user_id'))
 	if not user is None:
-		user.user_score = put.get('user_score')
+		if put.get('type') == 'update_user_score':
+			user.user_score = put.get('user_score')
+		elif put.get('type') == 'update_connect_time':
+			user.connect_time = timezone.now()
+		elif put.get('type') == 'update_shutgame_time':
+			user.shutgame_time = timezone.now()
 		user.save()
-		return JsonResponse({"result_msg":"ok"})
 
+		return JsonResponse({"result_msg":"ok"})
+	else:
+		return JsonResponse({"result_msg":"user is None"})
+@csrf_exempt
+def update_connectTime(request):
+	put = QueryDict(request.body)
+	
 @csrf_exempt
 def user_control(request):
 	if request.method == 'POST':
 		return user_insert(request)
 
 	#update score..
-	elif request.method == 'PUT':		
-		return update_userscore(request)
+	elif request.method == 'PUT':	
+		return update_userinfo(request)
+
 	elif request.method == 'GET':
 		return user_list(request)
 	else:
