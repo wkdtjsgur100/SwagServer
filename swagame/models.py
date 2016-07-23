@@ -7,7 +7,7 @@ from django.utils import timezone
 class Login(models.Model):
 	user_id = models.TextField()
 	user_nickname = models.TextField()
-	user_score = models.BigIntegerField()
+	user_score = models.BigIntegerField(blank=True,null=True)
 	user_signin_time = models.DateTimeField(default=timezone.now)
 	connect_time = models.DateTimeField(blank=True,null=True)
 	shutgame_time = models.DateTimeField(blank=True,null=True)
