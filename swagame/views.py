@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import Login
 from django.http import JsonResponse
+from django.http import HttpResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
@@ -11,11 +12,11 @@ def exist_check_user(request):
 
 @csrf_exempt
 def user_list(request):
-	rank_list = Login.objects.all().order_by('user_score')
+	rank_list = Login.objects.order_by('-user_score')
 	
-	datas = serializers.serialize('json',rank_list)
+	datas = serializers.serialize('json',rank_list,fields=('user_id','user_nickname','user_score'))
 	encoded_result = datas.encode('utf-8')
-	return JsonResponse(encoded_result,safe=False)
+	return HttpResponse(encoded_result)
 
 @csrf_exempt
 def user_insert(request):
